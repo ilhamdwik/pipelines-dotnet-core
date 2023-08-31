@@ -7,11 +7,20 @@ trigger:
 - master
 
 pool:
-  vmImage: ubuntu-latest
+  vmImage: 'ubuntu-20.04'
 
 variables:
   buildConfiguration: 'Release'
 
 steps:
+- script: dotnet test
+  displayName: Run unit tests
+
 - script: dotnet build --configuration $(buildConfiguration)
-  displayName: 'dotnet build $(buildConfiguration)'
+  displayName: Build application
+
+- script: docker build -t test:v1.0 .
+  displayName: Build Image
+
+- script: docker push test:v1.0 .
+  displayName: Push image
